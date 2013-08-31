@@ -1,11 +1,3 @@
-function head(str) {
-  return str.charAt(0);
-}
-
-function tail(str) {
-  return str.substring(1);
-}
-
 String.prototype.replaceAt = function (index, character) {
   return this.substr(0, index) + character + this.substr(index + character.length);
 }
