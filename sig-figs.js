@@ -1,6 +1,6 @@
 String.prototype.replaceAt = function (index, character) {
   return this.substr(0, index) + character + this.substr(index + character.length);
-}
+};
 
 function SigFloat(str) {
   if(typeof str == 'number') {
@@ -15,12 +15,14 @@ function SigFloat(str) {
 SigFloat.containsSigDigit = function(str) {
   for (var i = 0; i < str.length; i++) {
     var j = parseInt(str.charAt(i));
-    if ((j && j != 0) || str.charAt(i) == '.') {
+    if ((j && j !== 0) || str.charAt(i) == '.') {
       return true;
+    }else{
+      return false;
     }
   }
-  return false;
-}
+  //return false;
+};
 
 // Only the digits to the right of the decimal place are considered significant in a logarithmic value.
 SigFloat.log = function(sf) {
@@ -33,7 +35,7 @@ SigFloat.log = function(sf) {
     } else {
       return new SigFloat('0');
     }
-}
+};
 
 SigFloat.prototype.toFixed = function() {
   var str = this.fixed;
@@ -42,15 +44,15 @@ SigFloat.prototype.toFixed = function() {
     return str;
   }
   return parseFloat(str).toFixed(arr[1].length);
-}
+};
 
 SigFloat.prototype.toFloat = function() {
   return parseFloat(this.fixed);
-}
+};
 
 SigFloat.prototype.toString = function() {
   return this.fixed;
-}
+};
 
 SigFloat.prototype.trailingZeros = function() {
     var decimalCorrection = 0;
@@ -58,7 +60,7 @@ SigFloat.prototype.trailingZeros = function() {
       decimalCorrection = -1;
     }
     return (this.toFixed().length - this.toFloat().toString().length + decimalCorrection);
-}
+};
 
 SigFloat.prototype.isSignificantAt = function(index) {
   var flStr = this.toString();
@@ -66,13 +68,13 @@ SigFloat.prototype.isSignificantAt = function(index) {
   if (! (parseInt(flChar) || parseInt(flChar) === 0)) { // If character isn't an integer
     return false;
   }
-  if ((flStr.substring(0, index).match(/^[-\.0]+$/g) || index == 0) && parseInt(flChar) === 0) { // If character is a leading zero
+  if ((flStr.substring(0, index).match(/^[-\.0]+$/g) || index === 0) && parseInt(flChar) === 0) { // If character is a leading zero
     return false;
   }
   if (flStr.substring(0, index).match(/[eE]/g)) { // If character is the argument of an exponent (e.g. "23" in 6.022e+23)
   	return false;
   }
-  if (parseInt(flChar) != 0) { // If character is a non-zero integer
+  if (parseInt(flChar) !== 0) { // If character is a non-zero integer
     return true;
   }
   if (SigFloat.containsSigDigit(flStr.substring(index + 1))) { // If character is followed by a significant digit
@@ -82,7 +84,7 @@ SigFloat.prototype.isSignificantAt = function(index) {
     return true;
   }
   return false;
-}
+};
 
 SigFloat.prototype.sigFigures = function() {
   var flStr = this.toString(),
@@ -91,7 +93,7 @@ SigFloat.prototype.sigFigures = function() {
     count += (this.isSignificantAt(i) * 1);
   }
   return count;
-}
+};
 
 SigFloat.prototype.withSigFigures = function(n) {
   if (n >= this.sigFigures() || ! parseInt(n + '') || n < 0) {
@@ -128,4 +130,4 @@ SigFloat.prototype.withSigFigures = function(n) {
   } else {
     return new SigFloat('0');
   }
-}
+};
