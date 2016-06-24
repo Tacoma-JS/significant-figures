@@ -58,6 +58,10 @@ describe("sf.sigFigures() returns the number of significant figures as a number.
         var sf = new SigFloat(Number.MAX_VALUE.toString());
         expect(sf.sigFigures()).toBe(17);	
     });
+    it("sf='1.300e3' should return 4", function(){
+        var sf = new SigFloat('1.300e3');
+        expect(sf.sigFigures()).toBe(4);	
+    });
 });
 
 // - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -213,15 +217,112 @@ describe("sf.isSignificantAt(index) determines significance of the character at 
 
 
 //sf.withSigFigures(n)
-/*
-describe("sf.withSigFigures(n) comparison ... ?", function() {
-    it("sf = '1' with n = 3, three significant figures", function(){
-        var sf = new SigFloat('1');//a string
-        console.dir(sf.withSigFigures(3));
-        expect(sf.withSigFigures(3)).toBe(1.00);
+// - - - - - - - - - - - - - - - - - - - - - - - - 
+describe("sf.withSigFigures(n) handle scientific notation e^ ...  ?", function() {
+
+    it("sf = '123' with n = 4 > three significant figures, returns 'this' object", function(){
+    	  var n = 4;
+        var sf = new SigFloat('123');//a string
+        console.log("typeof: "+typeof(sf.withSigFigures(n)));
+        console.dir(sf.withSigFigures(n));
+        expect(typeof(sf.withSigFigures(n))).toBe('object');
+        expect(sf.withSigFigures(n).fixed).toEqual('123');
+    });
+                
+    it("sf = '123' with n = -1 < zero , returns 'this' object", function(){
+    	  var n = 4;
+        var sf = new SigFloat('123');//a string
+        console.log("typeof: "+typeof(sf.withSigFigures(n)));
+        console.dir(sf.withSigFigures(n));
+        expect(typeof(sf.withSigFigures(n))).toBe('object');
+        expect(sf.withSigFigures(n).fixed).toEqual('123');
+    });
+        
+    it("sf = '123' with n = '' null or undefined , returns 'this' object", function(){
+    	  var n ='';
+        var sf = new SigFloat('123');//a string
+        console.log("typeof: "+typeof(sf.withSigFigures(n)));
+        console.dir(sf.withSigFigures(n));
+        expect(typeof(sf.withSigFigures(n))).toBe('object');
+        expect(sf.withSigFigures(n).fixed).toEqual('123');
+    });
+
+    it("sf = '1.0101e1' with n = '1'  , returns 10 ", function(){
+    	  var n = 1;
+        var sf = new SigFloat('1.0101e1');//a string
+        console.log("sf: "+sf+"  n="+n);
+        console.log("typeof: "+typeof(sf.withSigFigures(n)));
+        console.dir(sf.withSigFigures(n));
+        expect(typeof(sf.withSigFigures(n))).toBe('object');
+        expect(sf.withSigFigures(n).fixed).toEqual('10');
+    });
+
+    it("sf = '1.0101e1' with n = '2'  , returns 10 ", function(){
+    	  var n = 2;
+        var sf = new SigFloat('1.0101e1');//a string
+        console.log("sf: "+sf+"  n="+n);
+        console.log("typeof: "+typeof(sf.withSigFigures(n)));
+        console.dir(sf.withSigFigures(n));
+        expect(typeof(sf.withSigFigures(n))).toBe('object');
+        expect(sf.withSigFigures(n).fixed).toEqual('10');
+    });
+    it("sf = '1.0101e1' with n = '3'  , returns 10.1 ", function(){
+    	  var n = 3;
+        var sf = new SigFloat('1.0101e1');//a string
+        console.log("sf: "+sf+"  n="+n);
+        console.log("typeof: "+typeof(sf.withSigFigures(n)));
+        console.dir(sf.withSigFigures(n));
+        expect(typeof(sf.withSigFigures(n))).toBe('object');
+        expect(sf.withSigFigures(n).fixed).toEqual('10.1');
+    });
+    it("sf = '1.0101e1' with n = '4'  , returns 10.1 ", function(){
+    	  var n = 4;
+        var sf = new SigFloat('1.0101e1');//a string
+        console.log("sf: "+sf+"  n="+n);
+        console.log("typeof: "+typeof(sf.withSigFigures(n)));
+        console.dir(sf.withSigFigures(n));
+        expect(typeof(sf.withSigFigures(n))).toBe('object');
+        expect(sf.withSigFigures(n).fixed).toEqual('10.1');
+    });
+    it("sf = '1.0105e1' with n = '4'  , returns 10.11 because of rounding", function(){
+    	  var n = 4;
+        var sf = new SigFloat('1.0105e1');//a string
+        console.log("sf: "+sf+"  n="+n);
+        console.log("typeof: "+typeof(sf.withSigFigures(n)));
+        console.dir(sf.withSigFigures(n));
+        expect(typeof(sf.withSigFigures(n))).toBe('object');
+        expect(sf.withSigFigures(n).fixed).toEqual('10.11');
+    });
+    it("sf = '1.0101e1' with n = '5'  , returns 10.0101", function(){
+    	  var n = 5;
+        var sf = new SigFloat('1.0101e1');//a string
+        console.log("sf: "+sf+"  n="+n);
+        console.log("typeof: "+typeof(sf.withSigFigures(n)));
+        console.dir(sf.withSigFigures(n));
+        expect(typeof(sf.withSigFigures(n))).toBe('object');
+        expect(sf.withSigFigures(n).fixed).toEqual('10.101');
+    });
+    it("sf = '1.2345e1' with n = '4'  , returns 12.35 because of rounding", function(){
+    	  var n = 4;
+        var sf = new SigFloat('1.2345e1');//a string
+        console.log("sf: "+sf+"  n="+n);
+        console.log("typeof: "+typeof(sf.withSigFigures(n)));
+        console.dir(sf.withSigFigures(n));
+        expect(typeof(sf.withSigFigures(n))).toBe('object');
+        expect(sf.withSigFigures(n).fixed).toEqual('12.35');
+    });
+    it("sf = '1.2345e1' with n = '5'  , returns 12.345", function(){
+    	  var n = 5;
+        var sf = new SigFloat('1.2345e1');//a string
+        console.log("sf: "+sf+"  n="+n);
+        console.log("sf.sigFigures(): "+sf.sigFigures());
+        console.log("typeof: "+typeof(sf.withSigFigures(n)));
+        console.dir(sf.withSigFigures(n));
+        expect(typeof(sf.withSigFigures(n))).toBe('object');
+        expect(sf.withSigFigures(n).fixed).toEqual('12.345');
     });
 });
-*/
+
 
 //copy me
 // - - - - - - - - - - - - - - - - - - - - - - - - 
