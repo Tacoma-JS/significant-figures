@@ -96,7 +96,7 @@ SigFloat.prototype.sigFigures = function() {
 };
 
 SigFloat.prototype.withSigFigures = function(n) {
-  if (n >= this.sigFigures() || ! parseInt(n + '') || n < 0) {
+  if (n > this.sigFigures() || ! parseInt(n + '') || n < 0) {
     return this;
   }
   
